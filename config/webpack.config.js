@@ -59,10 +59,12 @@ const useTypeScript = fs.existsSync(paths.appTsConfig);
 const swSrc = paths.swSrc;
 
 // style files regexes
-const cssRegex = /\.css$/;
+const cssRegex = /\.(css)$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+const stylusRegex =/\.styl$/;
+const stylusModuleRegex=/\.module\.styl$/;
 
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === 'true') {
@@ -325,6 +327,11 @@ module.exports = function (webpackEnv) {
         .map(ext => `.${ext}`)
         .filter(ext => useTypeScript || !ext.includes('ts')),
       alias: {
+        page        : path.resolve(__dirname, '../src/page'),
+        component   : path.resolve(__dirname, '../src/component'),
+        store        : path.resolve(__dirname, '../src/store'),
+        common        : path.resolve(__dirname, '../src/common'),
+        "@"          :path.resolve(__dirname, '../src'),
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
@@ -405,7 +412,7 @@ module.exports = function (webpackEnv) {
                     {
                       runtime: hasJsxRuntime ? 'automatic' : 'classic',
                     },
-                  ],
+                  ],"mobx"
                 ],
                 
                 plugins: [
@@ -420,6 +427,13 @@ module.exports = function (webpackEnv) {
                       },
                     },
                   ],
+                  [
+                    "@babel/plugin-proposal-decorators",
+                    {
+                      "legacy": true
+                    }
+                  ],
+                  ["import", { "libraryName": "antd-mobile", "style": "css" }],
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
@@ -495,6 +509,33 @@ module.exports = function (webpackEnv) {
                   getLocalIdent: getCSSModuleLocalIdent,
                 },
               }),
+            },
+            { // 配置 stylus
+              test: stylusRegex,
+              exclude: stylusModuleRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 2,
+                  sourceMap: isEnvProduction
+                  ? shouldUseSourceMap
+                  : isEnvDevelopment
+                },
+                'stylus-loader'
+              ),
+              sideEffects: true,
+            },
+            {
+              test: stylusModuleRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 2,
+                  sourceMap: isEnvProduction
+                    ? shouldUseSourceMap
+                    : isEnvDevelopment,
+                    getLocalIdent: getCSSModuleLocalIdent,
+                },
+                'stylus-loader'
+              ),
             },
             // Opt-in support for SASS (using .scss or .sass extensions).
             // By default we support SASS Modules with the

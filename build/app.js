@@ -1,5 +1,9 @@
+
+import 'babel-polyfill'
 import React from 'react';
-import HomePage from './page/HomePage/HomePage.js';
+import ReactDOM from 'react-dom';
+
+import HomePage from 'page/HomePage/HomePage.js';
 import { observer } from 'mobx-react';
 
 @observer
@@ -13,5 +17,7 @@ class App extends React.Component {
     }
 }
 
-
-export default App; 
+ReactDOM.render(
+    <App />,
+    document.getElementById('app')
+);
