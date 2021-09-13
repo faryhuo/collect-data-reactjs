@@ -16,11 +16,11 @@ class MainPage extends React.Component {
   constructor(props) {
         super(props);
         //react state
-        this.props.homePageStore.showLoading()
         this.state={
           current: 0,
           maxCurrent:0
         }
+        
     }
 
     nextStep(current){

@@ -16,6 +16,7 @@ class HomePage extends React.Component {
         this.state={
 
         }
+        this.homePageStore=homePageStore;
     }
 
     destroyAll() {
@@ -45,9 +46,9 @@ class HomePage extends React.Component {
                      <MenuList></MenuList>                    
                 </div>
                 <div className="contain-wrapper">
-                    <MainPage showMessage={(e)=>{this.showMessage(e)}} homePageStore={homePageStore}></MainPage>
+                    <MainPage showMessage={(e)=>{this.showMessage(e)}} homePageStore={this.homePageStore}></MainPage>
                 </div>
-                {homePageStore.loading && <div className="loading">                
+                {this.homePageStore.loading && <div className="loading">                
                     <Spin size="large" tip="Loading..."></Spin>
                 </div>}
             </div>

@@ -1,14 +1,20 @@
-import {observable, action} from 'mobx';
-
+import {observable, action,makeObservable} from 'mobx';
 
 class HomePageStore {
-  @observable loading=false;
+  @observable 
+  loading=false;
 
-  @action showLoading(){
+  constructor() {
+    // 添加makeObservable
+    makeObservable(this)
+  }
+  @action 
+  showLoading(){
     this.loading=true;
   }
 
-  @action closeLoading(){
+  @action 
+  closeLoading(){
     this.loading=false;
   }
 }
