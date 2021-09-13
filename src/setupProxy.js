@@ -1,0 +1,15 @@
+const {
+    createProxyMiddleware
+} = require('http-proxy-middleware');
+module.exports = function (app) {
+    app.use(createProxyMiddleware('/download', {
+        target: 'http://127.0.0.1:8081/',
+        "changeOrigin": true,
+        ws: true
+    }));
+    app.use(createProxyMiddleware('/checkExcelFile', {
+        target: 'http://127.0.0.1:8081/',
+        "changeOrigin": true,
+        ws: true
+    }));
+};
