@@ -148,6 +148,8 @@ class ExcelUploadPage extends React.Component {
             self.props.nextStep(3);
         }).catch(function(error){
             console.log(error);
+            const errorMessage="Has internal server error, please check the log file.";
+            self.props.showMessage(errorMessage)
             self.props.homePageStore.closeLoading();
         });
         
