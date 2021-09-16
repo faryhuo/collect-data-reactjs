@@ -3,11 +3,12 @@ import 'page/HomePage/HomePage.styl';
 import MenuList from 'component/Menu/Menu.js';
 import MainPage from 'page/MainPage/MainPage.js';
 import { Spin,Modal} from 'antd';
-import homePageStore from 'store/HomePageStore.js';
-import { observer } from 'mobx-react';
+import { observer,inject } from 'mobx-react';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import 'antd/dist/antd.css';
+
+@inject("homePageStore")
 @observer
 class HomePage extends React.Component {
     constructor(props) {
@@ -16,7 +17,6 @@ class HomePage extends React.Component {
         this.state={
 
         }
-        this.homePageStore=homePageStore;
     }
 
     destroyAll() {
@@ -46,9 +46,9 @@ class HomePage extends React.Component {
                      <MenuList></MenuList>                    
                 </div>
                 <div className="contain-wrapper">
-                    <MainPage showMessage={(e)=>{this.showMessage(e)}} homePageStore={this.homePageStore}></MainPage>
+                    <MainPage showMessage={(e)=>{this.showMessage(e)}}></MainPage>
                 </div>
-                {this.homePageStore.loading && <div className="loading">                
+                {this.props.homePageStore.loading && <div className="loading">                
                     <Spin size="large" tip="Loading..."></Spin>
                 </div>}
             </div>

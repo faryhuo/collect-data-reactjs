@@ -3,15 +3,20 @@ import { Upload, Button,Modal,Alert } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import './ExcelUploadPage.styl';
 import axios from 'axios';
-import { observer } from 'mobx-react';
+import { observer,inject } from 'mobx-react';
 
 const { Dragger } = Upload;
 
-
+@inject(stores => ({
+    licenseInfoStore: stores.licenseInfoStore,
+    homePageStore: stores.homePageStore,
+    })
+)
 @observer
 class ExcelUploadPage extends React.Component {
     constructor(props) {
         super(props);
+        //this.props.homePageStore.showLoading();
         //react state
         let self=this;
         this.state={
@@ -129,6 +134,7 @@ class ExcelUploadPage extends React.Component {
         const formData = new FormData();
         const licenseInfoStore=this.props.licenseInfoStore;
         if(licenseInfoStore.fileList.length===0 || !licenseInfoStore.excelFile){
+            this.props.homePageStore.closeLoading();
             this.props.showMessage("Please confrim if upload the excel file and html file.");
             return;
         }

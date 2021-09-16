@@ -5,11 +5,16 @@ import ReactDOM from 'react-dom';
 //import './index.css';
 import App from './App.js';
 import reportWebVitals from './reportWebVitals';
+import { Provider} from 'mobx-react';
+import stores from 'store/index.js';
+
 
 ReactDOM.render(
-//   <React.StrictMode>
-    <App />
-//   </React.StrictMode>
+   <React.StrictMode>
+    <Provider {...stores}>
+         <App />
+    </Provider>
+   </React.StrictMode>
   ,
   document.getElementById('app')
 );

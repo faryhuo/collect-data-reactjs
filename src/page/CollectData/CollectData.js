@@ -2,11 +2,13 @@ import React from 'react';
 import { Upload, Button} from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import 'page/CollectData/CollectData.styl';
-import { Observer } from 'mobx-react';
+import HtmlTable from 'component/HtmlTable/HtmlTable';
+import { observer, inject } from 'mobx-react';
 
 const { Dragger } = Upload;
 
-@Observer
+@inject("licenseInfoStore")
+@observer
 class CollectData extends React.Component {
     constructor(props) {
         super(props);
@@ -15,10 +17,7 @@ class CollectData extends React.Component {
         this.state={
             multiple:true,
             name:"files",
-            showUploadList:{
-                showDownloadIcon: false,
-                showRemoveIcon: false
-            },
+            showUploadList:false,
             fileList:this.props.licenseInfoStore.fileList,
             fileMap:this.props.licenseInfoStore.fileMap,
             action:"",
@@ -39,12 +38,10 @@ class CollectData extends React.Component {
                         fileMap: fileMap
                     });
                 }
+                self.props.licenseInfoStore.addFile(file);
                 self.setState(state => ({
                     fileList: [...state.fileList, file],
-                }),()=>{
-                    self.props.licenseInfoStore.fileList=this.state.fileList;
-                    console.log(self.props.licenseInfoStore);
-                });
+                }));
                 return false;
             }
         }
@@ -54,11 +51,10 @@ class CollectData extends React.Component {
     render() {
         return (
             <div className="CollectData" >
-                <form  action="/download" method="post" encType="multipart/form-data" onSubmit={(e)=>{console.log(e);}}>
-                    <div style={{"textAlign":"center"}}>
-                        <h2>Upload the license information file</h2>
-                    </div>
-                    <div >
+                <div style={{"textAlign":"center"}}>
+                    <h2>Upload the license information file (html file)</h2>
+                </div>
+                <div className="upload-control">
                     <Dragger {...this.state} accept=".htm,.html">
                         <p className="ant-upload-drag-icon">
                         <InboxOutlined />
@@ -69,10 +65,12 @@ class CollectData extends React.Component {
                         band files
                         </p>
                     </Dragger>
-                    </div>
-                </form>    
+                </div>
+                <div className="data-list">
+                    <HtmlTable ></HtmlTable>
+                </div>
                 <div  className="action-button">
-                    <Button type="primary" onClick={()=>{this.props.nextStep()}}>Next</Button>
+                    <Button disabled={this.state.fileList.length>0?false:true} type="primary" onClick={()=>{this.props.nextStep()}}>Next</Button>
                 </div>
             </div>
         );
