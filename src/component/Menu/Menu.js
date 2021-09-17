@@ -12,7 +12,7 @@ class MenuList extends React.Component {
         super(props);
         //react state
         this.state={
-          collapsed: false,
+          collapsed: true,
         }
     }
     

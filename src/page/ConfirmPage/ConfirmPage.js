@@ -1,10 +1,6 @@
 import React from 'react';
 import { Button} from 'antd';
-import {
-  ConfigProvider,
-  Transfer,
-
-} from 'antd';
+import LicenseTable from 'component/LicenseTable/LicenseTable';
 import './ConfirmPage.styl';
 
 class ConfirmPage extends React.Component {
@@ -23,18 +19,8 @@ class ConfirmPage extends React.Component {
                 <div>
                   <h1>Confrim need upload file</h1>
                 </div>
-                <div>
-                <ConfigProvider>
-                <Transfer
-                  listStyle={{
-                    width: 400,
-                    height: 400,
-                  }}
-                  dataSource={this.state.dataSource}
-                  titles={['Upload file', 'Duplicate file']}
-                  render={item => item.title}
-                />
-                </ConfigProvider>
+                <div className="data-list">
+                    <LicenseTable showMessage={this.props.showMessage}></LicenseTable>
                 </div>
                 <div  className="action-button">
                     <Button type="primary" onClick={()=>{this.props.nextStep()}}>Next</Button>

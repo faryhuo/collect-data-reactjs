@@ -1,19 +1,18 @@
 import React from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button,Alert  } from 'antd';
 import { observer,inject} from 'mobx-react';
-import _ from 'lodash';
-import './HtmlTable.styl';
+import './LicenseTable.styl';
 
 
 @inject("licenseInfoStore")
 @observer
-class HtmlTable extends React.Component {
+class LicenseTable extends React.Component {
   constructor(props) {
         super(props);
         //react state
         this.state={
           filteredInfo: null,
-          sortedInfo: null,
+          sortedInfo: {field:"convert",order:"ascend"},
           selectedRowKeys: [], // Check here to configure the default column
           loading: false          
         }
@@ -50,23 +49,11 @@ class HtmlTable extends React.Component {
   };
 
   remove(){
-    const message="Do you want to delete the record?";
+    const message="Do you want to deleted the record?";
     const self=this;
     const action={
       onOk:()=>{
-        self.props.licenseInfoStore.remove(self.state.selectedRowKeys);
-        self.setState({ selectedRowKeys:[]});
-      }
-    }
-    this.props.showMessage(message,action)
-  }
-
-  removeAll(){
-    const message="Do you want to delete all record?";
-    const self=this;
-    const action={
-      onOk:()=>{
-        self.props.licenseInfoStore.clear();
+        self.props.licenseInfoStore.removeLicenseInfo(self.state.selectedRowKeys);
         self.setState({ selectedRowKeys:[]});
       }
     }
@@ -84,44 +71,48 @@ class HtmlTable extends React.Component {
     getColumns(){
       return [{
             title: 'File Name',
-            dataIndex: 'name',
-            key:"name",
+            dataIndex: 'fileName',
+            key:"fileName",
             sorter:(a, b) => this.order(a,b),
-            sortOrder: this.getSortOrder.call(this,"name")
+            sortOrder: this.getSortOrder.call(this,"fileName")
           },{
-            title:"Size",
-            dataIndex:"size",
-            render: size =>{
-              let text=_.round(size/1024, 2) +" kb";
-              return <span>{text}</span>;
-            },
+            title:"Machine Name",
+            dataIndex:"computerName",
             sorter:(a, b) => this.order(a,b),
-            sortOrder: this.getSortOrder.call(this,"size")
+            sortOrder: this.getSortOrder.call(this,"computerName")
           },{
-            title:"ModifiedDate",
-            dataIndex:"modifiedDate",
-            render: modifiedDate => <span>{modifiedDate.toDateString()}</span>,
+            title:"User",
+            dataIndex:"windowLogon",
             sorter:(a, b) => this.order(a,b),
-            sortOrder: this.getSortOrder.call(this,"modifiedDate")
+            sortOrder: this.getSortOrder.call(this,"windowLogon")
+          },{
+            title:"Status",
+            dataIndex:"convert",
+            sorter:(a, b) => this.order(a,b),
+            render: convert => <div>{convert? <Alert type="success" message="Success" banner />:<Alert type="error" message="Error" banner />}</div>,
+            sortOrder: this.getSortOrder.call(this,"convert")
+          },{
+            title:"Message",
+            dataIndex:"message",
+            render: message => <pre>{message}</pre>,
+            sorter:(a, b) => this.order(a,b),
+            sortOrder: this.getSortOrder.call(this,"message")
           }];
     }
 
     render() {
       const columns=this.getColumns();
         return (
-            <div className="HtmlTable">
+            <div className="LicenseTable">
                   <div className="action-button-list" >
-                    <Button type="primary" onClick={()=>{this.remove()}}> 
+                    <Button disabled={this.props.licenseInfoStore.licenseInfoDataSource.length?false:true} type="primary" onClick={()=>{this.remove()}}> 
                       Remove
                     </Button>
-                    <Button type="primary" onClick={()=>{this.removeAll()}}> 
-                      Remove All
-                    </Button>
                   </div>
-                  <Table onChange={(pagination, filters, sorter)=>{this.handleChange(pagination, filters, sorter)}} rowSelection={this.rowSelection} size="small" bordered columns={columns} dataSource={[...this.props.licenseInfoStore.htmlFileDataSource]} />
+                  <Table onChange={(pagination, filters, sorter)=>{this.handleChange(pagination, filters, sorter)}} rowSelection={this.rowSelection} size="small" bordered columns={columns} dataSource={[...this.props.licenseInfoStore.licenseInfoDataSource]} />
           </div>
         );
     }
 }
 
-export default HtmlTable;
+export default LicenseTable;

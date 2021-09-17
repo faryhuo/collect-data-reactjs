@@ -4,11 +4,15 @@ import { InboxOutlined } from '@ant-design/icons';
 import 'page/CollectData/CollectData.styl';
 import HtmlTable from 'component/HtmlTable/HtmlTable';
 import { observer, inject } from 'mobx-react';
+import axios from 'axios';
 
 const { Dragger } = Upload;
 
-@inject("licenseInfoStore")
-@observer
+@inject(stores => ({
+    licenseInfoStore: stores.licenseInfoStore,
+    homePageStore: stores.homePageStore,
+    })
+)@observer
 class CollectData extends React.Component {
     constructor(props) {
         super(props);
@@ -47,6 +51,41 @@ class CollectData extends React.Component {
         }
     }
 
+    submit (){
+        this.props.homePageStore.showLoading();
+        const self=this;
+        const formData = new FormData();
+        const licenseInfoStore=this.props.licenseInfoStore;
+        if(licenseInfoStore.fileList.length===0){
+            this.props.homePageStore.closeLoading();
+            this.props.showMessage("Please confrim if upload the excel file and html file.");
+            return;
+        }
+        for(let item in licenseInfoStore.fileList){
+          let file=licenseInfoStore.fileList[item];  
+          formData.append('files', file);
+        }
+        axios({
+          url: '/api/checkLicenseFile',
+          method: 'post',
+          processData: false,
+          data: formData})
+          .then((res) => { 
+            console.log(res);
+            self.props.homePageStore.closeLoading();
+            if(res.data.status===0){
+                licenseInfoStore.licenseInfoList=res.data.data;
+                self.props.nextStep(1);
+            }           
+        }).catch(function(error){
+            console.log(error);
+            const errorMessage="Has internal server error, please check the log file.";
+            self.props.showMessage(errorMessage)
+            self.props.homePageStore.closeLoading();
+        });
+        
+    }
+
 
     render() {
         return (
@@ -67,10 +106,10 @@ class CollectData extends React.Component {
                     </Dragger>
                 </div>
                 <div className="data-list">
-                    <HtmlTable ></HtmlTable>
+                    <HtmlTable showMessage={this.props.showMessage}></HtmlTable>
                 </div>
                 <div  className="action-button">
-                    <Button disabled={this.state.fileList.length>0?false:true} type="primary" onClick={()=>{this.props.nextStep()}}>Next</Button>
+                    <Button disabled={this.state.fileList.length>0?false:true} type="primary" onClick={()=>{this.submit()}}>Next</Button>
                 </div>
             </div>
         );

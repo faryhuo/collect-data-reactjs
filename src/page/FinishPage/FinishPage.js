@@ -18,11 +18,11 @@ class FinishPage extends React.Component {
                 status="success"
                 title="Successfully upload license information file. Please check the excel if can be download!"
                 subTitle="Download file need takes 1-5 minutes, please wait."
-                extra={[
-                  <Button type="primary">
-                    Go Home
-                  </Button>,
-                ]}
+                // extra={[
+                //   <Button type="primary">
+                //     Go Home
+                //   </Button>,
+                // ]}
               />
           </div>
         );

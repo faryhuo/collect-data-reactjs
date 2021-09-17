@@ -23,10 +23,10 @@ class HomePage extends React.Component {
         Modal.destroyAll();
     }
       
-    showMessage(msg) {
+    showMessage(msg,action) {
         const { confirm } = Modal;
         let self=this;
-        confirm({
+        var config={
             icon: <ExclamationCircleOutlined />,
             content: <div >{msg}</div>,
             onOk() {
@@ -35,7 +35,22 @@ class HomePage extends React.Component {
             onCancel() {
                 self.destroyAll()
             },
-        });       
+        };
+        if(action){
+            if(action.onOk){
+                config.onOk=()=>{
+                    action.onOk();
+                    self.destroyAll()
+                }
+            }
+            if(action.onCancel){
+                config.onCancel=()=>{
+                    action.onCancel();
+                    self.destroyAll()
+                }
+            }
+        }
+        confirm(config);       
       }
     
 
@@ -46,7 +61,7 @@ class HomePage extends React.Component {
                      <MenuList></MenuList>                    
                 </div>
                 <div className="contain-wrapper">
-                    <MainPage showMessage={(e)=>{this.showMessage(e)}}></MainPage>
+                    <MainPage showMessage={(a,b)=>{this.showMessage(a,b)}}></MainPage>
                 </div>
                 {this.props.homePageStore.loading && <div className="loading">                
                     <Spin size="large" tip="Loading..."></Spin>

@@ -16,6 +16,7 @@ const { Dragger } = Upload;
 class ExcelUploadPage extends React.Component {
     constructor(props) {
         super(props);
+        axios.defaults.timeout=30000000;
         //this.props.homePageStore.showLoading();
         //react state
         let self=this;
@@ -57,7 +58,7 @@ class ExcelUploadPage extends React.Component {
         const formData = new FormData();
         formData.append("excelFile",this.state.excelFile);
         axios({
-          url: '/checkExcelFile',
+          url: '/api/checkExcelFile',
           method: 'post',
           processData: false,
           data: formData,
@@ -101,7 +102,7 @@ class ExcelUploadPage extends React.Component {
         const licenseInfoStore=this.props.licenseInfoStore;
         const self=this;
         axios({
-            url: '/downloadFile',
+            url: '/api/downloadFile',
             method: 'post',
             processData: false,
             responseType: 'blob'})
@@ -133,18 +134,21 @@ class ExcelUploadPage extends React.Component {
         const self=this;
         const formData = new FormData();
         const licenseInfoStore=this.props.licenseInfoStore;
-        if(licenseInfoStore.fileList.length===0 || !licenseInfoStore.excelFile){
+        if(licenseInfoStore.licenseInfoList.length===0 || !licenseInfoStore.excelFile){
             this.props.homePageStore.closeLoading();
             this.props.showMessage("Please confrim if upload the excel file and html file.");
             return;
         }
-        for(let item in licenseInfoStore.fileList){
-          let file=licenseInfoStore.fileList[item];  
-          formData.append('files', file);
+        var arr=[];
+        for(let item in licenseInfoStore.licenseInfoList){
+          let licenseInfo=licenseInfoStore.licenseInfoList[item];  
+          arr.push(licenseInfo);
         }
+        formData.append('computerInfoListStr', JSON.stringify(arr));
+
         formData.append("excelFile",licenseInfoStore.excelFile);
         axios({
-          url: '/download',
+          url: '/api/download',
           method: 'post',
           processData: false,
           data: formData})

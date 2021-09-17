@@ -5,18 +5,34 @@ class LicenseInfoStore {
   constructor() {
     makeObservable (this,{
       fileList:observable,
+      licenseInfoList:observable,
       addFile:action.bound,
       clear:action.bound,
       remove:action.bound,
-      htmlFileDataSource:computed
+      htmlFileDataSource:computed,
+      licenseInfoDataSource:computed,
+      removeLicenseInfo:action.bound
     });
   }
   @observable fileList=[];
   key=0;
+  @observable licenseInfoList=[];
   fileMap={};
   excelFile;
   fileName="Company Software License.xlsx";
   validExcelFile=false;
+
+  @computed get licenseInfoDataSource(){
+    let dataSource=[];
+    for(let i=0;i<this.licenseInfoList.length;i++){
+        let obj=this.licenseInfoList[i];
+        if(obj.key===null || obj.key===undefined){
+          obj.key=i;
+        }
+        dataSource.push(obj);
+    } 
+    return dataSource;
+  };
 
   @computed get htmlFileDataSource(){
     let dataSource=[];
@@ -30,7 +46,6 @@ class LicenseInfoStore {
         fileInfo.key=file.key;
         dataSource.push(fileInfo);
     } 
-    console.log(dataSource)
     return dataSource;
   };
   
@@ -44,6 +59,15 @@ class LicenseInfoStore {
       let file=this.fileList[i];
       if(_.indexOf(selectedKeys,file.key)>=0){
         this.fileList.remove(file);
+      }
+    }
+  }
+
+  @action.bound removeLicenseInfo(selectedKeys){
+    for(let i=this.licenseInfoList.length-1;i>=0;i--){
+      let licenseInfo=this.licenseInfoList[i];
+      if(_.indexOf(selectedKeys,licenseInfo.key)>=0){
+        this.licenseInfoList.remove(licenseInfo);
       }
     }
   }
