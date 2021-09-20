@@ -49,6 +49,9 @@ class LicenseTable extends React.Component {
   };
 
   remove(){
+    if(this.state.selectedRowKeys.length===0){
+      return false;
+    }
     const message="Do you want to deleted the record?";
     const self=this;
     const action={

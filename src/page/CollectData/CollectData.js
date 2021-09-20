@@ -3,6 +3,9 @@ import { Upload, Button} from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import 'page/CollectData/CollectData.styl';
 import HtmlTable from 'component/HtmlTable/HtmlTable';
+import Panel from 'component/Panel/Panel';
+
+
 import { observer, inject } from 'mobx-react';
 import axios from 'axios';
 
@@ -90,9 +93,10 @@ class CollectData extends React.Component {
     render() {
         return (
             <div className="CollectData" >
-                <div style={{"textAlign":"center"}}>
+                {/* <div style={{"textAlign":"center"}}>
                     <h2>Upload the license information file (html file)</h2>
-                </div>
+                </div> */}
+                <Panel title="Upload the license information file (html file)">
                 <div className="upload-control">
                     <Dragger {...this.state} accept=".htm,.html">
                         <p className="ant-upload-drag-icon">
@@ -105,9 +109,15 @@ class CollectData extends React.Component {
                         </p>
                     </Dragger>
                 </div>
-                <div className="data-list">
-                    <HtmlTable showMessage={this.props.showMessage}></HtmlTable>
+                </Panel>
+                <div className="split">
+                    
                 </div>
+                <Panel title="Upload file information">
+                    <div className="data-list">
+                        <HtmlTable showMessage={this.props.showMessage}></HtmlTable>
+                    </div>
+                </Panel>
                 <div  className="action-button">
                     <Button disabled={this.state.fileList.length>0?false:true} type="primary" onClick={()=>{this.submit()}}>Next</Button>
                 </div>

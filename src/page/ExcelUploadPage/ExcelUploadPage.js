@@ -4,6 +4,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import './ExcelUploadPage.styl';
 import axios from 'axios';
 import { observer,inject } from 'mobx-react';
+import Panel from 'component/Panel/Panel';
 
 const { Dragger } = Upload;
 
@@ -183,11 +184,7 @@ class ExcelUploadPage extends React.Component {
     render() {
         return (
             <div className="ExcelUploadPage" >
-                <form  action="/" method="post"  onSubmit={(e)=>{console.log(e);}}>
-                    <div style={{"textAlign":"center"}}>
-                        <h2>Upload the excel file</h2>
-                    </div>
-                    <div >
+                <Panel title="Upload the excel file">
                     <Dragger {...this.state} accept=".xls,.xlsx">
                         <p className="ant-upload-drag-icon">
                         <InboxOutlined />
@@ -198,11 +195,11 @@ class ExcelUploadPage extends React.Component {
                         band files
                         </p>
                     </Dragger>
-                    </div>
-                </form>  
-                <div>
-                 {  this.state.errorMessage && <Alert message={this.state.errorMessage} type="error" />}
-                </div>  
+                    <div className="split"></div>
+                    <div>
+                        {  this.state.errorMessage && <Alert message={this.state.errorMessage} type="error" />}
+                    </div>  
+                </Panel>
                 <div  className="action-button">
                     <Button disabled={!this.state.enableNext} type="primary" onClick={()=>{this.submit()}}>Next</Button>
                 </div>

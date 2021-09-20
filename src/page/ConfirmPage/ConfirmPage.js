@@ -2,6 +2,7 @@ import React from 'react';
 import { Button} from 'antd';
 import LicenseTable from 'component/LicenseTable/LicenseTable';
 import './ConfirmPage.styl';
+import Panel from 'component/Panel/Panel';
 
 class ConfirmPage extends React.Component {
   constructor(props) {
@@ -16,12 +17,11 @@ class ConfirmPage extends React.Component {
     render() {
         return (
             <div className="ConfirmPage">
-                <div>
-                  <h1>Confrim need upload file</h1>
-                </div>
+              <Panel title="Confrim need upload file">
                 <div className="data-list">
                     <LicenseTable showMessage={this.props.showMessage}></LicenseTable>
                 </div>
+                </Panel> 
                 <div  className="action-button">
                     <Button type="primary" onClick={()=>{this.props.nextStep()}}>Next</Button>
                 </div>

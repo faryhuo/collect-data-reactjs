@@ -39,7 +39,7 @@ class MainPage extends React.Component {
         case 0:return <CollectData {...propsAttr} nextStep={()=>this.nextStep(1)}></CollectData>
         case 1:return <ConfirmPage {...propsAttr} nextStep={()=>this.nextStep(2)}></ConfirmPage>
         case 2:return <ExcelUploadPage {...propsAttr} nextStep={()=>this.nextStep(3)}></ExcelUploadPage>
-        case 3:return <FinishPage></FinishPage>
+        case 3:return <FinishPage nextStep={()=>this.nextStep(0)}></FinishPage>
         default:<FinishPage></FinishPage>
       }
     }

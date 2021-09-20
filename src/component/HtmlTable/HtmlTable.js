@@ -3,6 +3,8 @@ import { Table, Button } from 'antd';
 import { observer,inject} from 'mobx-react';
 import _ from 'lodash';
 import './HtmlTable.styl';
+import PreviewHTML from 'component/PreviewHTML/PreviewHTML';
+
 
 
 @inject("licenseInfoStore")
@@ -14,6 +16,8 @@ class HtmlTable extends React.Component {
         this.state={
           filteredInfo: null,
           sortedInfo: null,
+          preview:false,
+          currentFileName:"",
           selectedRowKeys: [], // Check here to configure the default column
           loading: false          
         }
@@ -50,6 +54,9 @@ class HtmlTable extends React.Component {
   };
 
   remove(){
+    if(this.state.selectedRowKeys.length===0){
+      return false;
+    }
     const message="Do you want to delete the record?";
     const self=this;
     const action={
@@ -62,6 +69,9 @@ class HtmlTable extends React.Component {
   }
 
   removeAll(){
+    if(this.state.selectedRowKeys.length===0){
+      return false;
+    }
     const message="Do you want to delete all record?";
     const self=this;
     const action={
@@ -103,13 +113,38 @@ class HtmlTable extends React.Component {
             render: modifiedDate => <span>{modifiedDate.toDateString()}</span>,
             sorter:(a, b) => this.order(a,b),
             sortOrder: this.getSortOrder.call(this,"modifiedDate")
+          },{
+            title:"Action",
+            dataIndex:"file",
+            render: file => <span><a href="#" onClick={()=>{this.review(file)}}>review</a></span>,
           }];
     }
 
+    review(file){
+      let reader = new FileReader();
+      reader.readAsText(file);
+      let self=this;
+      reader.onload = function(event) {        
+        let result=event.target.result;
+        console.log(result);
+        self.setState({
+          preview:true,
+          fileContent:result,
+          currentFileName:file.name
+        })
+      };
+    }
+
+    handleCancel(){
+      this.setState({ preview: false });
+    };
     render() {
       const columns=this.getColumns();
         return (
             <div className="HtmlTable">
+                  {this.state.preview && <PreviewHTML title={this.state.currentFileName} handleCancel={()=>{this.handleCancel()}} visible={this.state.preview}>
+                    {this.state.fileContent}
+                    </PreviewHTML>}
                   <div className="action-button-list" >
                     <Button type="primary" onClick={()=>{this.remove()}}> 
                       Remove
